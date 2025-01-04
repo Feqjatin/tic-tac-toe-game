@@ -1,31 +1,73 @@
-// Setup scene, camera, and renderer
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(75,  1, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setSize(500, 500);
 document.body.appendChild(renderer.domElement);
 
-// Create the board geometry and material
-const boardGeometry = new THREE.BoxGeometry(4, 2, 0.1);  // Board dimensions
-const boardMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-const board = new THREE.Mesh(boardGeometry, boardMaterial);
-scene.add(board);
+ 
+const loader = new THREE.GLTFLoader();
+var board;
+loader.load('b.glb', function(gltf) {
+   board = gltf.scene;
+  scene.add(board);
+  board.scale.set(1, 1, 1); // Adjust size as needed
+     
+}, undefined, function(error) {
+  console.error(error); // Handle errors
+});
 
-// Lighting setup
+var board2;
+loader.load('b.glb', function(gltf) {
+   board2 = gltf.scene;
+  scene.add(board2);
+  board2.position.set(20,20,20);
+  board2.scale.set(2, 2, 2); // Adjust size as needed
+    
+}, undefined, function(error) {
+  console.error(error); // Handle errors
+});
+
 const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(2, 2, 2).normalize();
 scene.add(light);
 
-// Camera positioning
-camera.position.z = 5;
+const ambientLight = new THREE.AmbientLight(0x404040, 1);
+scene.add(ambientLight);
 
-// Animation loop
+camera.position.set(0, 200, 100);
+
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.05;
+controls.enableZoom = true;
+controls.enablePan = true;
+document.addEventListener("keydown", (e) => {
+  if(e.key.toLowerCase()=='w')
+  {
+  scene.rotation.x+=50;
+  }
+  else  if(e.key.toLowerCase()=='s')
+  {
+  scene.rotation.x-=50;
+  }else  if(e.key.toLowerCase()=='a')
+  {
+  scene.rotation.y+=50;
+  }else  if(e.key.toLowerCase()=='d')
+  {
+  scene.rotation.y-=50;
+  }
+  console.log(e);   
+});
+window.addEventListener('resize', () => {
+    camera.aspect = 1;
+    camera.updateProjectionMatrix();
+    renderer.setSize(500, 500);
+});
+
 function animate() {
     requestAnimationFrame(animate);
-
-    // Rotate the board around its center axis
-        // board.rotation.x += 0.01;
-        // board.rotation.y += 0.01;
+    
+    controls.update();
 
     renderer.render(scene, camera);
 }

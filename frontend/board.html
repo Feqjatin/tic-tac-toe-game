@@ -3,10 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Rotating Board with Three.js</title>
+    <title>3D Rotating Board with Controls</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>  
 </head>
-<body style="margin: 0; overflow: hidden;">
-    <script src="board.js"></script>
+<body style="margin: 0; overflow: hidden;" hight="200px" width="200px">
+    <script type="module" src="board.js"></script>
 </body>
 </html>
