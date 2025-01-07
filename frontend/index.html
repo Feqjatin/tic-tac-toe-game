@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Game Lobby</title>
+     <style>
+        body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+}
+.container {
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+input {
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    width: 80%;
+    margin-bottom: 15px;
+}
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #ff9800;
+    color: white;
+    font-size: 18px;
+    transition: 0.3s;
+}
+button:hover {
+    background: #ff5722;
+}
+.create-btn {
+    margin-top: 20px;
+    background: #4caf50;
+}
+.create-btn:hover {
+    background: #388e3c;
+}
+.loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 20px;
+}
+
+.spinner {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+     </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Business Game</h1>
+        <div class="form-group">
+            <input type="text" id="uniqueCode" placeholder="Enter Unique Code...">
+            <button onclick="connectGame()">Connect</button>
+        </div>
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>wait for host aprove
+          </div>
+        <button class="create-btn" onclick="createNewGame()">Create New Game</button>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+</html>
