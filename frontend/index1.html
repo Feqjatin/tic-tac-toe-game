@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waiting Lobby - Business Game</title>
+    <title>Player Name Input</title>
     <style>
         body {
             font-family: 'Poppins', sans-serif;
@@ -23,9 +23,12 @@
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
-        #uniqueCode {
-            font-size: 24px;
-            margin-bottom: 20px;
+        input {
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            width: 80%;
+            margin-bottom: 15px;
         }
         button {
             padding: 12px 20px;
@@ -40,46 +43,14 @@
         button:hover {
             background: #ff5722;
         }
-        .create-btn {
-            margin-top: 20px;
-            background: #4caf50;
-        }
-        .create-btn:hover {
-            background: #388e3c;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .admit-btn, .cancel-btn {
-            padding: 5px 10px;
-            margin-left: 10px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Waiting Lobby</h1>
-        <p id="uniqueCode">Code: <span id="codeDisplay"></span></p>
-        <button onclick="copyCode()">Copy Code</button>
-
-        <h2>Incoming Players</h2>
-        <ul id="playerList">
-             
-        </ul>
-
-        <button class="create-btn" onclick="startGame()">Start Game</button>
+        <h2>Enter Player Name</h2>
+        <input type="text" id="playerName" name="playerName" placeholder="Enter your name..." required>
+        <button type="submit" onclick=getUid(playerName.value)>Submit</button>
     </div>
-
-    <script src="wait.js"></script>
+    <script src="index1.js"></script>
 </body>
 </html>
