@@ -94,51 +94,79 @@ app.get('/userGet', async (req, res) => {
     }
 });
 
+
 app.get('/join', async (req, res) => {
-    Usid=url.parse(req.url, true).query.sid;
-    Uuid=url.parse(req.url, true).query.uid;
-    const  userName= await User.find({uid:Uuid});
-    const newPlayer = new Player({ uid:Uuid ,sid:Usid,name:userName[0].name,status:'1'});
-    const result = await newPlayer.save(); 
-    console.log(userName);
-    
+    try {
+        // Directly use the already imported 'url' module
+        const Usid = url.parse(req.url, true).query.sid;
+        const Uuid = url.parse(req.url, true).query.uid;
+
+        const newPlayer_1 = await Player.find({ uid: Uuid, sid: Usid });
+
+        if (newPlayer_1.length === 0) {  
+            const userName = await User.findOne({ uid: Uuid });
+            
+            if (!userName) {
+                return res.status(404).send("User not found");
+            }
+
+            const newPlayer = new Player({ 
+                uid: Uuid, 
+                sid: Usid, 
+                name: userName.name, 
+                status: '1' 
+            });
+
+            await newPlayer.save(); 
+            console.log("Player joined successfully");
+        } else {
+            console.log("Player already exists.");
+        }
+       res.json({"val":"done"});
+        
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send("Internal Server Error");
+    }
 });
 
-app.get('/checkStatus', async (req, res) => {
-    try{
-    Usid=url.parse(req.url, true).query.sid;
-    Uuid=url.parse(req.url, true).query.uid;
-    const  PlayerRes= await Player.find({uid:Uuid,sid:Usid});
-    if(PlayerRes[0]==null){
-    res.json({"val":"1"});
-    }
-    else{
-        res.json({"val":PlayerRes[0].status});
-    }
-   console.log(Usid+" "+Uuid);
-    } catch (error) {
-    res.status(500).send('Error fetching servers');
-    }
-});
+
+
+// app.get('/checkStatus', async (req, res) => {
+//     try{
+//     Usid=url.parse(req.url, true).query.sid;
+//     Uuid=url.parse(req.url, true).query.uid;
+//     const  PlayerRes= await Player.find({uid:Uuid,sid:Usid});
+//     if(PlayerRes[0]==null){
+//     res.json({"val":"1"});
+//     }
+//     else{
+//         res.json({"val":PlayerRes[0].status});
+//     }
+//    console.log(Usid+" "+Uuid);
+//     } catch (error) {
+//     res.status(500).send('Error fetching servers');
+//     }
+// });
 
 app.get('/checkPlayer', async (req, res) => {
-    try{
-    Usid=url.parse(req.url, true).query.sid;
-    
-    const  PlayerRes= await Player.find({sid:Usid});
-    if(PlayerRes[0]==null)
-    {
-        res.json({name:null});
-    }
-    else{
-        res.json(PlayerRes);
-    }
-    console.log(Usid);
-    
+    try {
+        Usid = url.parse(req.url, true).query.sid;
+
+        // Corrected: Removed the 'new' keyword before Player.find()
+        const PlayerRes = await Player.find({ sid: Usid });
+        
+        if (PlayerRes.length === 0) {  // Check if the array is empty instead of checking index directly
+            res.json({ name: null });
+        } else {
+            res.json(PlayerRes);
+        }
+        console.log("Get player for " + Usid);
     } catch (error) {
-    res.status(500).send('Error fetching servers');
+        res.status(500).send('Error fetching players');
     }
 });
+
 
 
 

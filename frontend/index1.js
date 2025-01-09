@@ -17,12 +17,11 @@ function getUid(userName) {
     }
 }
 
- 
 document.addEventListener("keypress", (e) => {
-     if(e.key=="e")
-     {console.log(localStorage.getItem('uid')+" uid");
-     console.log(localStorage.getItem('uCode')+" ucode");
+    if(e.key=="e")
+    {console.log(localStorage.getItem('uid')+" uid");
+    console.log(localStorage.getItem('uCode')+" ucode");
      localStorage.clear();
-     }
-     
+    }
+    
 });

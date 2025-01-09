@@ -1,15 +1,24 @@
 var ulAccepted=document.getElementById("playerList_1");
-var ull=document.getElementById("playerList");
+
 
 document.addEventListener("DOMContentLoaded", () => {
-  
-    if(localStorage.getItem('uCode')==null){generateCode();
-        
+     
+    if(localStorage.getItem('uCode')==null){
+        generateCode();
     }
     else{
         document.getElementById("codeDisplay").innerText=localStorage.getItem('uCode');
     }
-    
+    if(localStorage.getItem('user')!='host'){
+        setTimeout(()=>{
+            console.log("ooo"+localStorage.getItem('user'));
+            document.getElementById('strtBtn').style.display='none';
+        },2);
+        
+    }
+    else{
+       
+    }
 });
 
 
@@ -19,7 +28,7 @@ function generateCode(){
     const display=(code)=>{
     console.log("hii"+code);
     localStorage.setItem('uCode', code);
-    
+     
    document.getElementById("codeDisplay").innerText=code;
     }
         fetch("http://localhost:3005/serverGet?uid="+localStorage.getItem('uid'))
@@ -33,39 +42,30 @@ function generateCode(){
     navigator.clipboard.writeText(code);
     alert('Code copied to clipboard!');
 }
-
-function admitPlayer(playerName) {
-    alert(playerName + ' has been admitted!');
-}
-
-function cancelPlayer(playerName) {
-    alert(playerName + ' has been removed!');
-}
+ 
 
 function startGame() {
-    alert('Starting the game...');
-    window.location.href = 'game.html';
+    fetch("http://localhost:3005/startGame?sid="+localStorage.getItem('sid'))
+       .then(data=>data.json())
+       .then(data=>{
+       window.location.href = 'game.html';
+        })
+       .catch(e=>console.log(e));
+
+   
 }
 
 function startFetching() {
     const intervalId = setInterval(() => {
         console.log("getting player");
-        fetch("http://localhost:3005/checkPlayer?sid="+localStorage.getItem('uCode'))
+        fetch("http://localhost:3005/checkPlayer?sid="+localStorage.getItem('uCode')+"&ran="+Math.random()*1000)
             .then(data => data.json())
             .then(data => {
-                console.log("Response data:", data[0].name);
+                console.log("Response data:");
                // <li>Player1 <button class="admit-btn" onclick="admitPlayer('Player1')">Admit</button><button class="cancel-btn" onclick="cancelPlayer('Player1')">Cancel</button></li>
                for(i=0;i<data.length;i++)
                {
-                if(data[i].status=='0')
-                {
-                    ulAccepted.innerHTML+=`<li>${data[i].name} </li>`;
-                }
-                else{
-                    ull.innerHTML+=`<li>${data[i].name}  <button class="admit-btn" onclick="admitPlayer(${data[i].uid})">Admit</button><button class="cancel-btn" onclick="cancelPlayer(${data[i].uid})">Cancel</button></li>`;
-                }
-                 console.log(data[i].name);
-                 
+                   ulAccepted.innerHTML+=`<li>${data[i].name} </li>`;
                }
                clearInterval(intervalId); 
             })

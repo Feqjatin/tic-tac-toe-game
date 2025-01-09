@@ -51,6 +51,15 @@
         <input type="text" id="playerName" name="playerName" placeholder="Enter your name..." required>
         <button type="submit" onclick=getUid(playerName.value)>Submit</button>
     </div>
-    <script src="index1.js"></script>
+    <script src="index1.js">
+        document.addEventListener("keypress", (e) => {
+    if(e.key=="e")
+    {console.log(localStorage.getItem('uid')+" uid");
+    console.log(localStorage.getItem('uCode')+" ucode");
+     localStorage.clear();
+    }
+    
+});
+    </script>
 </body>
 </html>

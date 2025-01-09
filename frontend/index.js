@@ -5,7 +5,7 @@ function connectGame() {
         //alert('Connecting to server with code: ' + code);
         localStorage.setItem('uCode',code);
         localStorage.setItem('user','player');
-        document.getElementById('loading').style.display = 'flex';
+        //document.getElementById('loading').style.display = 'flex';
         waiting();
     } else {
         alert('Please enter a valid code.');
@@ -13,7 +13,7 @@ function connectGame() {
 }
 
 function createNewGame() {
-
+    localStorage.setItem('user','host');
     window.location.href = 'wait.html';
     //alert('Creating a new game...');
      
@@ -23,37 +23,40 @@ function waiting()
     console.log("try to join ");
     fetch("http://localhost:3005/join?uid=" + localStorage.getItem('uid') + "&sid="+localStorage.getItem('uCode'))
     .then(data=>data.json())
-    .then(data=>console.log(data+" join"))
+    .then(data=>{
+    console.log(data+" join");
+    window.location.href = 'wait.html';
+    })
     .catch(e=>console.log(e));
-    startFetching();
+   
         
 }
-function startFetching() {
-    const intervalId = setInterval(() => {
-        console.log("check");
-        fetch("http://localhost:3005/checkStatus?uid=" + localStorage.getItem('uid') + "&sid="+localStorage.getItem('uCode'))
-            .then(data => data.json())
-            .then(data => {
-                console.log("Response data:", data);
-                if (data.val == '0') {
+// function startFetching() {
+//     const intervalId = setInterval(() => {
+//         console.log("check");
+//         fetch("http://localhost:3005/checkStatus?uid=" + localStorage.getItem('uid') + "&sid="+localStorage.getItem('uCode'))
+//             .then(data => data.json())
+//             .then(data => {
+//                 console.log("Response data:", data);
+//                 if (data.val == '0') {
                      
-                    window.location.href = 'wait.html'; 
-                    console.log("Interval cleared due to response:", data.response);
-                    clearInterval(intervalId);
+//                     
+//                     console.log("Interval cleared due to response:", data.response);
+//                     clearInterval(intervalId);
                     
-                }
-                else if(data.val == '2')
-                {
-                    alert("decline");
-                    clearInterval(intervalId);
-                }
-                else{
-                     console.log("1");
-                }
-            })
-            .catch(error => console.log("Error:", error));
-    }, 5000); 
-}
+//                 }
+//                 else if(data.val == '2')
+//                 {
+//                     alert("decline");
+//                     clearInterval(intervalId);
+//                 }
+//                 else{
+//                      console.log("1");
+//                 }
+//             })
+//             .catch(error => console.log("Error:", error));
+//     }, 5000); 
+// }
 
  
 
