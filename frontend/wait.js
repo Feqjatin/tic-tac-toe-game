@@ -1,16 +1,15 @@
+var ulAccepted=document.getElementById("playerList_1");
 var ull=document.getElementById("playerList");
 
 document.addEventListener("DOMContentLoaded", () => {
   
     if(localStorage.getItem('uCode')==null){generateCode();
-        fetch("http://localhost:3005/asignHost?uid=" + localStorage.getItem('uid') + "&sid="+localStorage.getItem('uCode'))
-        .catch(e=>console.log(e));
-        localStorage.setItem('user','host');
-        startFetching();
+        
     }
     else{
         document.getElementById("codeDisplay").innerText=localStorage.getItem('uCode');
     }
+    
 });
 
 
@@ -23,7 +22,7 @@ function generateCode(){
     
    document.getElementById("codeDisplay").innerText=code;
     }
-        fetch("http://localhost:3005/serverGet")
+        fetch("http://localhost:3005/serverGet?uid="+localStorage.getItem('uid'))
        .then(data=>data.json())
        .then(data=>display(data.val))
        .catch(e=>console.log(e));
@@ -51,18 +50,26 @@ function startGame() {
 function startFetching() {
     const intervalId = setInterval(() => {
         console.log("getting player");
-        fetch("http://localhost:3005/getPlayer?sid="+localStorage.getItem('uCode'))
+        fetch("http://localhost:3005/checkPlayer?sid="+localStorage.getItem('uCode'))
             .then(data => data.json())
             .then(data => {
-                console.log("Response data:", data);
+                console.log("Response data:", data[0].name);
                // <li>Player1 <button class="admit-btn" onclick="admitPlayer('Player1')">Admit</button><button class="cancel-btn" onclick="cancelPlayer('Player1')">Cancel</button></li>
-            //    for(i=0;i<data.length;i++)
-            //    {
-            //      if(data[i].status=='1')
+               for(i=0;i<data.length;i++)
+               {
+                if(data[i].status=='0')
+                {
+                    ulAccepted.innerHTML+=`<li>${data[i].name} </li>`;
+                }
+                else{
+                    ull.innerHTML+=`<li>${data[i].name}  <button class="admit-btn" onclick="admitPlayer(${data[i].uid})">Admit</button><button class="cancel-btn" onclick="cancelPlayer(${data[i].uid})">Cancel</button></li>`;
+                }
+                 console.log(data[i].name);
                  
-            //    }
-                
+               }
+               clearInterval(intervalId); 
             })
             .catch(error => console.log("Error:", error));
     }, 5000); 
 }
+startFetching();

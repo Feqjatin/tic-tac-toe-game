@@ -17,10 +17,10 @@ mongoose.connect('mongodb+srv://prajapatijatin:123456789Ok@cluster0.7dpjd.mongod
   .catch(err => console.error('Error connecting to MongoDB:', err));
 
 // Define Schema and Model
-const serverSchema = new mongoose.Schema({
-    sid: { type: String, required: true }
-});
-const Server = mongoose.model('server_name', serverSchema);
+// const serverSchema = new mongoose.Schema({
+//     sid: { type: String, required: true }
+// });
+// const Server = mongoose.model('server_name', serverSchema);
 
 const userSchema = new mongoose.Schema({
     uid: { type: String, required: true },
@@ -37,6 +37,7 @@ const Host = mongoose.model('Host', hostSchema);
 const playerSchema = new mongoose.Schema({
     sid: {type: String,required: true},
     uid: {type: String,required: true},
+    name: {type: String,required: true},
     status:{ type: String,required: true,enum: ['0', '1', '2']}
 });
 
@@ -44,16 +45,18 @@ const Player = mongoose.model('Player', playerSchema);
 
 // Route to get all servers
 app.get('/serverGet', async (req, res) => {
+    tempUid=url.parse(req.url, true).query.uid;
+    console.log(tempUid);
     try { 
         while(true)
         {
         tempCode=generateCode();
-        const servers = await Server.find({sid:tempCode});
-        if(servers[0]==null){
-            const newServer = new Server({ sid: tempCode });
-            const result = await newServer.save(); 
+        const host = await Host.find({sid:tempCode});
+        if(host[0]==null){
+            const newHost = new Host({ sid: tempCode,uid:tempUid });
+            const result = await newHost.save(); 
             code={"val":tempCode};
-            console.log("hhha"+code.val+result);
+            console.log("host add"+code.val+result);
             res.json(code);break;
         }
         else{
@@ -79,7 +82,7 @@ app.get('/userGet', async (req, res) => {
             const newUser = new User({ uid: tempCode,name:tempName});
             const result = await newUser.save(); 
             code={"val":tempCode};
-            console.log("hhha"+code.val+result);
+            //console.log("hhha"+code.val+result);
             res.json(code);break;
         }
         else{
@@ -94,9 +97,10 @@ app.get('/userGet', async (req, res) => {
 app.get('/join', async (req, res) => {
     Usid=url.parse(req.url, true).query.sid;
     Uuid=url.parse(req.url, true).query.uid;
-    const newPlayer = new Player({ uid:Uuid ,sid:Usid,status:'1'});
+    const  userName= await User.find({uid:Uuid});
+    const newPlayer = new Player({ uid:Uuid ,sid:Usid,name:userName[0].name,status:'1'});
     const result = await newPlayer.save(); 
-    console.log(result);
+    console.log(userName);
     
 });
 
@@ -112,6 +116,25 @@ app.get('/checkStatus', async (req, res) => {
         res.json({"val":PlayerRes[0].status});
     }
    console.log(Usid+" "+Uuid);
+    } catch (error) {
+    res.status(500).send('Error fetching servers');
+    }
+});
+
+app.get('/checkPlayer', async (req, res) => {
+    try{
+    Usid=url.parse(req.url, true).query.sid;
+    
+    const  PlayerRes= await Player.find({sid:Usid});
+    if(PlayerRes[0]==null)
+    {
+        res.json({name:null});
+    }
+    else{
+        res.json(PlayerRes);
+    }
+    console.log(Usid);
+    
     } catch (error) {
     res.status(500).send('Error fetching servers');
     }
