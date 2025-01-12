@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("ooo"+localStorage.getItem('user'));
             document.getElementById('strtBtn').style.display='none';
         },2);
+        lookForStart();
         
     }
     else{
@@ -31,7 +32,7 @@ function generateCode(){
      
    document.getElementById("codeDisplay").innerText=code;
     }
-        fetch("http://localhost:3005/serverGet?uid="+localStorage.getItem('uid'))
+        fetch("http://localhost:3005/serverGet?uid="+localStorage.getItem('uid')+"&name"+localStorage.getItem('name'))
        .then(data=>data.json())
        .then(data=>display(data.val))
        .catch(e=>console.log(e));
@@ -42,16 +43,20 @@ function generateCode(){
     navigator.clipboard.writeText(code);
     alert('Code copied to clipboard!');
 }
- 
+
+
+
 
 function startGame() {
-    fetch("http://localhost:3005/startGame?sid="+localStorage.getItem('sid'))
-       .then(data=>data.json())
-       .then(data=>{
-       window.location.href = 'game.html';
-        })
-       .catch(e=>console.log(e));
+    console.log("lara");
+    fetch(`http://localhost:3005/startGame?sid=${localStorage.getItem('uCode')}`)
+    .then(response => response.json())
+    .then(data => {
 
+        console.log(data.message);
+        window.location.href = 'game.html';
+    })
+    .catch(e => console.error("Error starting game:", e));
    
 }
 
@@ -62,14 +67,40 @@ function startFetching() {
             .then(data => data.json())
             .then(data => {
                 console.log("Response data:");
+                ulAccepted.innerHTML="";
                // <li>Player1 <button class="admit-btn" onclick="admitPlayer('Player1')">Admit</button><button class="cancel-btn" onclick="cancelPlayer('Player1')">Cancel</button></li>
                for(i=0;i<data.length;i++)
                {
                    ulAccepted.innerHTML+=`<li>${data[i].name} </li>`;
                }
-               clearInterval(intervalId); 
+                 
             })
             .catch(error => console.log("Error:", error));
     }, 5000); 
 }
+
+function  lookForStart(){
+    const intervalId = setInterval(() => {
+        fetch(`http://localhost:3005/checkGame?sid=${localStorage.getItem('uCode')}`)
+        .then(response => response.json())
+        .then(data => {
+            if(data.status=="in_progress"){
+                window.location.href = 'game.html';
+            }
+            else if(data.status=="completed")
+            {
+                alert("game end ");
+                localStorage.clear();
+                window.location.href = 'index1.html';
+            }
+            console.log("Game State:", data.status);
+        })
+        .catch(e => console.error("Error checking game state:", e));
+    },3000);
+}
+
+
+
+
+
 startFetching();

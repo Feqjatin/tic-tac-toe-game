@@ -4,6 +4,7 @@ function getUid(userName) {
         const display = (code) => {
             console.log("uid" + code);
             localStorage.setItem('uid', code);
+            localStorage.setItem('name',userName);
         }
 
         fetch("http://localhost:3005/userGet?name=" + userName)
@@ -17,11 +18,11 @@ function getUid(userName) {
     }
 }
 
-document.addEventListener("keypress", (e) => {
-    if(e.key=="e")
-    {console.log(localStorage.getItem('uid')+" uid");
+document.addEventListener("DOMContentLoaded", () => {
+     
+    console.log(localStorage.getItem('uid')+" uid");
     console.log(localStorage.getItem('uCode')+" ucode");
      localStorage.clear();
-    }
+    
     
 });

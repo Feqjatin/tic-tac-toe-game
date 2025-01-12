@@ -1,4 +1,4 @@
-// Import required modules
+ 
 const express = require('express');
 const mongoose = require('mongoose');
 const cors= require('cors');
@@ -7,16 +7,14 @@ const url=require('url');
 
 const app = express();
 const PORT = 3005;
-
-// Middleware
+ 
 app.use(cors());
 app.use(bodyParser.json());
 
-// Connect to MongoDB
+ 
 mongoose.connect('mongodb+srv://prajapatijatin:123456789Ok@cluster0.7dpjd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(() => console.log('MongoDB connected'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
-
-// Define Schema and Model
+ 
 // const serverSchema = new mongoose.Schema({
 //     sid: { type: String, required: true }
 // });
@@ -27,46 +25,75 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true }
 });
 const User = mongoose.model('User', userSchema);
+
 const hostSchema = new mongoose.Schema({
     sid: {type: String,required: true},
     uid: {type: String,required: true}
 });
-
 const Host = mongoose.model('Host', hostSchema);
 
+ 
 const playerSchema = new mongoose.Schema({
-    sid: {type: String,required: true},
-    uid: {type: String,required: true},
-    name: {type: String,required: true},
-    status:{ type: String,required: true,enum: ['0', '1', '2']}
+    sid: { type: String, required: true },   
+    uid: { type: String, required: true },  
+    name: { type: String, required: true },  
+    symbol: { type: String, enum: ['X', 'O'], required: true },  
+    status: { type: String, enum: ['waiting', 'ready'], required: true },  
 });
-
 const Player = mongoose.model('Player', playerSchema);
 
-// Route to get all servers
+const gameSchema = new mongoose.Schema({
+    sid: { type: String, required: true },  // Game session ID
+    board: { type: [String], default: Array(9).fill(null) }, // 3x3 grid
+    currentTurn: { type: String, enum: ['X', 'O'], default: 'X' }, // Current turn
+    status: { type: String, enum: ['waiting', 'in_progress', 'completed'], default: 'waiting' }, // Game status
+    winner: { type: String, required: false }, // Winner symbol ('X', 'O', or 'tie')
+});
+const Game =mongoose.model("Game", gameSchema);
+
+
+
+
+
 app.get('/serverGet', async (req, res) => {
-    tempUid=url.parse(req.url, true).query.uid;
+    const tempUid = url.parse(req.url, true).query.uid;
+    const tempName = url.parse(req.url, true).query.name;
     console.log(tempUid);
-    try { 
-        while(true)
-        {
-        tempCode=generateCode();
-        const host = await Host.find({sid:tempCode});
-        if(host[0]==null){
-            const newHost = new Host({ sid: tempCode,uid:tempUid });
-            const result = await newHost.save(); 
-            code={"val":tempCode};
-            console.log("host add"+code.val+result);
-            res.json(code);break;
-        }
-        else{
-            console.log("re");
-        }
+    try {
+        while (true) {
+            const tempCode = generateCode();
+            const host = await Host.findOne({ sid: tempCode });
+            
+            if (!host) {  // If no existing host with the same sid
+                const newHost = new Host({ sid: tempCode, uid: tempUid });
+                await newHost.save();
+
+                // ✅ Use tempCode instead of sid
+                const newGame = new Game({ sid: tempCode });
+                const newPlayer = new Player({
+                    sid: tempCode,  // ✅ Correct variable used here
+                    uid: tempUid,
+                    name: tempName  || "Player1",  // ✅ Fallback for name
+                    symbol: "X",
+                    status: "ready",
+                });
+
+                await newGame.save();
+                await newPlayer.save();
+                
+                res.json({ val: tempCode });  // ✅ Single response sent
+                console.log("Host added:", tempCode);
+                break;  // ✅ Break out of the loop after successful creation
+            } else {
+                console.log("Duplicate code, retrying...");
+            }
         }
     } catch (error) {
-        res.status(500).send('Error fetching servers');
+        console.error(error);
+        res.status(500).send('Error creating server');
     }
 });
+
 
 
 app.get('/userGet', async (req, res) => {
@@ -95,40 +122,40 @@ app.get('/userGet', async (req, res) => {
 });
 
 
-app.get('/join', async (req, res) => {
-    try {
-        // Directly use the already imported 'url' module
-        const Usid = url.parse(req.url, true).query.sid;
-        const Uuid = url.parse(req.url, true).query.uid;
+// app.get('/join', async (req, res) => {
+//     try {
+//         // Directly use the already imported 'url' module
+//         const Usid = url.parse(req.url, true).query.sid;
+//         const Uuid = url.parse(req.url, true).query.uid;
 
-        const newPlayer_1 = await Player.find({ uid: Uuid, sid: Usid });
+//         const newPlayer_1 = await Player.find({ uid: Uuid, sid: Usid });
 
-        if (newPlayer_1.length === 0) {  
-            const userName = await User.findOne({ uid: Uuid });
+//         if (newPlayer_1.length === 0) {  
+//             const userName = await User.findOne({ uid: Uuid });
             
-            if (!userName) {
-                return res.status(404).send("User not found");
-            }
+//             if (!userName) {
+//                 return res.status(404).send("User not found");
+//             }
 
-            const newPlayer = new Player({ 
-                uid: Uuid, 
-                sid: Usid, 
-                name: userName.name, 
-                status: '1' 
-            });
+//             const newPlayer = new Player({ 
+//                 uid: Uuid, 
+//                 sid: Usid, 
+//                 name: userName.name, 
+//                 status: '1' 
+//             });
 
-            await newPlayer.save(); 
-            console.log("Player joined successfully");
-        } else {
-            console.log("Player already exists.");
-        }
-       res.json({"val":"done"});
+//             await newPlayer.save(); 
+//             console.log("Player joined successfully");
+//         } else {
+//             console.log("Player already exists.");
+//         }
+//        res.json({"val":"done"});
         
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+//     } catch (error) {
+//         console.error("Error:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
 
 
 
@@ -152,11 +179,9 @@ app.get('/join', async (req, res) => {
 app.get('/checkPlayer', async (req, res) => {
     try {
         Usid = url.parse(req.url, true).query.sid;
-
-        // Corrected: Removed the 'new' keyword before Player.find()
         const PlayerRes = await Player.find({ sid: Usid });
         
-        if (PlayerRes.length === 0) {  // Check if the array is empty instead of checking index directly
+        if (PlayerRes.length === 0) {  
             res.json({ name: null });
         } else {
             res.json(PlayerRes);
@@ -192,6 +217,198 @@ function generateUid()
     }
    return code;
 }
+
+
+
+// app.post("/createGame", async (req, res) => {
+//   tempUid=url.parse(req.url, true).query.uid;
+//   const sid = generateCode();
+
+ 
+// });
+
+
+app.get("/joinGame", async (req, res) => {
+    const sid = url.parse(req.url, true).query.sid;
+    const uid = url.parse(req.url, true).query.uid;
+    const name = url.parse(req.url, true).query.name;
+  
+    console.log("Tsid:", sid, "TUuid:", uid, "Tname:", name);  // Log the query params
+  
+    try {
+      const game = await Game.findOne({ sid });
+      if (!game) return res.status(404).send("Game not found.");
+  
+      if (game.status !== "waiting")
+        return res.status(400).send("Game already in progress.");
+  
+      const newPlayer = new Player({
+        sid,
+        uid,  
+        name,
+        symbol: "O",
+        status: "ready",
+      });
+  
+      await newPlayer.save();
+  
+      game.status = "waiting";
+      await game.save();
+  
+      res.json({ message: "Joined successfully." });
+    } catch (err) {
+      console.error("Error joining game:", err);
+      res.status(500).send("Error joining game.");
+    }
+  });
+  
+
+app.get("/startGame", async (req, res) => {
+    console.log("aayaa");
+    const sid  = url.parse(req.url, true).query.sid;
+
+    try {
+      const game = await Game.findOne({ sid });
+      game.status = "in_progress";
+      await game.save();
+      res.json({"va":"ho gya"});
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error starting game.");
+      }
+});
+app.get("/checkGame", async (req, res) => {
+    const { sid } = url.parse(req.url, true).query;
+
+    try {
+      const game = await Game.findOne({ sid });
+      res.json(game);
+       
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Error starting game.");
+      }
+});
+
+
+// Get game state
+app.get("/gameState/:sid", async (req, res) => {
+    const { sid } = req.params;
+  
+    try {
+      // Fetch the game details
+      const game = await Game.findOne({ sid });
+      if (!game) return res.status(404).send("Game not found.");
+  
+      // Fetch all players in the game
+      const players = await Player.find({ sid });
+  
+      // Identify the opponent's name (if there are two players)
+      const opponentName =
+        players.length > 1
+          ? players.find(player => player.uid !== game.currentTurn)?.name
+          : null;
+  
+      res.json({
+        game,
+        players,
+        opponentName, // Add opponent name for convenience
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).send("Error fetching game state.");
+    }
+  });
+  
+
+// Make a move
+app.post('/makeMove', async (req, res) => {
+  const { sid, position, symbol } = req.body;
+
+  try {
+      const game = await Game.findOne({ sid });
+      if (!game) return res.status(404).json({ message: "Game not found" });
+
+      // Check if the game is completed
+      if (game.status === "completed") {
+          return res.status(400).json({ message: "Game is already completed!" });
+      }
+
+      // Check if it's the player's turn
+      if (game.currentTurn !== symbol) {
+          return res.status(403).json({ message: `It's not ${symbol}'s turn!` });
+      }
+
+      // Check if the position is already taken
+      if (game.board[position]) {
+          return res.status(400).json({ message: "Position already taken!" });
+      }
+
+      // Update the board
+      game.board[position] = symbol;
+
+      // Check for a winner
+      const winPatterns = [
+          [0, 1, 2], [3, 4, 5], [6, 7, 8],
+          [0, 3, 6], [1, 4, 7], [2, 5, 8],
+          [0, 4, 8], [2, 4, 6]
+      ];
+
+      const winner = winPatterns.find(pattern => {
+          const [a, b, c] = pattern;
+          return game.board[a] && game.board[a] === game.board[b] && game.board[a] === game.board[c];
+      });
+
+      if (winner) {
+          game.status = "completed";
+          game.winner = game.board[winner[0]];
+      } else if (!game.board.includes(null)) {
+          game.status = "completed";
+          game.winner = "tie"; // Explicitly set to "tie" for a tied game
+      } else {
+          // Switch turns if no winner and the game is not a tie
+          game.currentTurn = symbol === "X" ? "O" : "X";
+      }
+
+      // Save the game state
+      await game.save();
+
+      const responseMessage = game.winner
+          ? game.winner === "tie"
+              ? "Match is a tie!"
+              : `Player ${game.winner} wins!`
+          : "Move made";
+
+      res.status(200).json({
+          message: responseMessage,
+          board: game.board,
+          currentTurn: game.currentTurn,
+          winner: game.winner
+      });
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ message: "Error making move", error: err.message });
+  }
+});
+
+
+
+app.post('/restartGame', async (req, res) => {
+  const { sid } = req.body;
+
+  const game = await Game.findOne({ sid });
+  if (!game) return res.status(404).json({ message: "Game not found" });
+
+  game.board = Array(9).fill(null);
+  game.currentTurn = "X";
+  game.status = "waiting";
+  game.winner = null;
+
+  await game.save();
+  res.status(200).json({ message: "Game restarted", board: game.board });
+});
+
+
  
 
 // Start the server

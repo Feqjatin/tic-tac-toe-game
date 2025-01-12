@@ -3,9 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+        }
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+            margin: 20px auto;
+        }
+        .cell {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 36px;
+            cursor: pointer;
+            color: #333;
+        }
+        .cell:hover {
+            background: #f0f0f0;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #ff9800;
+            color: white;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+        button:hover {
+            background: #ff5722;
+        }
+    </style>
 </head>
 <body>
-    hiiii
+    <div class="container">
+        <h2>Tic Tac Toe</h2>
+        <div class="board" id="board">
+            <div class="cell" onclick="makeMove(0)"></div>
+            <div class="cell" onclick="makeMove(1)"></div>
+            <div class="cell" onclick="makeMove(2)"></div>
+            <div class="cell" onclick="makeMove(3)"></div>
+            <div class="cell" onclick="makeMove(4)"></div>
+            <div class="cell" onclick="makeMove(5)"></div>
+            <div class="cell" onclick="makeMove(6)"></div>
+            <div class="cell" onclick="makeMove(7)"></div>
+            <div class="cell" onclick="makeMove(8)"></div>
+        </div>
+        <p id="status">Player X's Turn</p>
+    </div>
+
+    <script>
+        const sid = localStorage.getItem("uCode"); // Replace with actual game session handling
+        let currentSymbol = "X"; // Default starting symbol
+
+        async function makeMove(position) {
+            try {
+                const response = await fetch('http://localhost:3005/makeMove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sid: sid,
+                        position: position,
+                        symbol: currentSymbol
+                    })
+                });
+                const data = await response.json();
+                document.getElementById('status').innerText = data.message;
+                
+                // Update the board visually
+                if (data.board) {
+                    document.querySelectorAll('.cell').forEach((cell, index) => {
+                        cell.innerText = data.board[index] || '';
+                    });
+                }
+
+                // Update turn for the next move
+                if (data.currentTurn) {
+                    currentSymbol = data.currentTurn;
+                }
+
+            } catch (error) {
+                console.error("Error making move:", error);
+            }
+        }
+    </script>
 </body>
 </html>

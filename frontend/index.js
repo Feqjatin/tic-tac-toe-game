@@ -21,13 +21,23 @@ function createNewGame() {
 function waiting()
 {
     console.log("try to join ");
-    fetch("http://localhost:3005/join?uid=" + localStorage.getItem('uid') + "&sid="+localStorage.getItem('uCode'))
-    .then(data=>data.json())
-    .then(data=>{
-    console.log(data+" join");
-    window.location.href = 'wait.html';
-    })
-    .catch(e=>console.log(e));
+    fetch(`http://localhost:3005/joinGame?uid=${localStorage.getItem('uid')}&sid=${localStorage.getItem('uCode')}&name=${localStorage.getItem('name')}`)
+  .then(response => {
+    console.log("Response status:", response.status);
+    return response.text();  // Get raw text to inspect
+  })
+  .then(data => {
+    console.log("Response body:", data);
+    try {
+      const jsonData = JSON.parse(data);  // Attempt to parse JSON
+      console.log("Parsed JSON:", jsonData);
+      window.location.href = 'wait.html';
+    } catch (e) {
+      console.error("Error parsing JSON:", e);
+    }
+  })
+  .catch(e => console.error("Error:", e));
+
    
         
 }
