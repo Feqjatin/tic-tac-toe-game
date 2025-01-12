@@ -24,29 +24,37 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
         .player-info {
-            margin-bottom: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-        }
-        .player-info p {
-            font-size: 20px;
-            margin: 5px;
-        }
-        .player-info p#playerName {
-            font-weight: bold;
-            color: #ff9800;
-        }
-        .player-info p#opponentName {
-            font-weight: bold;
-            color: #ff5722;
-        }
-        .player-info p#PlayerSymbole {
-            font-weight: bold;
-            font-size: 24px;
-            color: #ff5722;
-        }
+    margin-bottom: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.player-info p {
+    font-size: 20px;
+    margin: 0 10px;  /* Adding space between player names */
+}
+
+#playerName {
+    font-weight: bold;
+    color: #ff9800;
+}
+
+#opponentName {
+    font-weight: bold;
+    color: #ff5722;
+}
+#status{
+    font-weight: bold;
+    color: #a16920;
+
+}
+
         .board {
             display: grid;
             grid-template-columns: repeat(3, 100px);
@@ -122,9 +130,10 @@
         
         <!-- Player info section -->
         <div class="player-info">
-            <p id="playerName"></p>
+            <div><p id="playerName"></p>
             vs
             <p id="opponentName"></p>
+            </div>
             <p id="PlayerSymbole"></p>
             <p id="status"></p>
         </div>

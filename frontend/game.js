@@ -87,7 +87,14 @@ function showPopup(message) {
     const messageElement = document.getElementById('popupMessage');
     messageElement.innerText = message;
     popup.style.display = 'block';
+
+     
+    setTimeout(() => {
+        closePopup();
+        restartGame(); 
+    }, 5000);
 }
+
 
 function closePopup() {
     const popup = document.getElementById('winnerPopup');

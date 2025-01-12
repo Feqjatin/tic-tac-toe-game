@@ -10,7 +10,7 @@ function getUid(userName) {
         fetch("http://localhost:3005/userGet?name=" + userName)
             .then(data => data.json())
             .then(data => {
-                display(data.val);
+                display(data.val); 
                 // Navigate after data is successfully fetched
                 window.location.href = 'index.html';
             })
