@@ -1,4 +1,11 @@
 var Code;
+document.addEventListener("DOMContentLoaded", () => {
+  uid=localStorage.getItem('uid');
+  Uname=localStorage.getItem('name');
+  localStorage.clear();
+  localStorage.setItem('uid',uid);
+  localStorage.setItem('name',Uname);
+});
 function connectGame() {
     const code = document.getElementById('uniqueCode').value;
     if(code) {

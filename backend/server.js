@@ -10,6 +10,7 @@ const PORT = 3005;
  
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json());
 
  
 mongoose.connect('mongodb+srv://prajapatijatin:123456789Ok@cluster0.7dpjd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(() => console.log('MongoDB connected'))
@@ -58,7 +59,7 @@ const Game =mongoose.model("Game", gameSchema);
 app.get('/serverGet', async (req, res) => {
     const tempUid = url.parse(req.url, true).query.uid;
     const tempName = url.parse(req.url, true).query.name;
-    console.log(tempUid);
+    console.log(tempUid+" pp "+tempName);
     try {
         while (true) {
             const tempCode = generateCode();
@@ -292,23 +293,19 @@ app.get("/checkGame", async (req, res) => {
 
 
 // Get game state
-app.get("/gameState/:sid", async (req, res) => {
-    const { sid } = req.params;
+app.get("/gameState", async (req, res) => {
+    const sid = url.parse(req.url, true).query.sid;
+    const uid = url.parse(req.url, true).query.uid;
   
     try {
       // Fetch the game details
       const game = await Game.findOne({ sid });
       if (!game) return res.status(404).send("Game not found.");
   
-      // Fetch all players in the game
       const players = await Player.find({ sid });
-  
-      // Identify the opponent's name (if there are two players)
-      const opponentName =
-        players.length > 1
-          ? players.find(player => player.uid !== game.currentTurn)?.name
-          : null;
-  
+        
+        const opponent = players.find(player => player.uid !== uid);
+        const opponentName = opponent ? opponent.name : null;
       res.json({
         game,
         players,

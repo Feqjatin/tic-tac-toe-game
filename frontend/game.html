@@ -23,6 +23,30 @@
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
+        .player-info {
+            margin-bottom: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .player-info p {
+            font-size: 20px;
+            margin: 5px;
+        }
+        .player-info p#playerName {
+            font-weight: bold;
+            color: #ff9800;
+        }
+        .player-info p#opponentName {
+            font-weight: bold;
+            color: #ff5722;
+        }
+        .player-info p#PlayerSymbole {
+            font-weight: bold;
+            font-size: 24px;
+            color: #ff5722;
+        }
         .board {
             display: grid;
             grid-template-columns: repeat(3, 100px);
@@ -44,6 +68,9 @@
         .cell:hover {
             background: #f0f0f0;
         }
+        .cell.clicked {
+            cursor: none;
+        }
         button {
             padding: 12px 20px;
             border: none;
@@ -57,11 +84,51 @@
         button:hover {
             background: #ff5722;
         }
+        .popup {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            width: 300px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            color: white;
+        }
+        .popup-content {
+            padding: 20px;
+        }
+        .popup button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #ff9800;
+            color: white;
+            font-size: 18px;
+        }
+        .popup button:hover {
+            background: #ff5722;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Tic Tac Toe</h2>
+        
+        <!-- Player info section -->
+        <div class="player-info">
+            <p id="playerName"></p>
+            vs
+            <p id="opponentName"></p>
+            <p id="PlayerSymbole"></p>
+            <p id="status"></p>
+        </div>
+
         <div class="board" id="board">
             <div class="cell" onclick="makeMove(0)"></div>
             <div class="cell" onclick="makeMove(1)"></div>
@@ -73,45 +140,16 @@
             <div class="cell" onclick="makeMove(7)"></div>
             <div class="cell" onclick="makeMove(8)"></div>
         </div>
-        <p id="status">Player X's Turn</p>
     </div>
 
-    <script>
-        const sid = localStorage.getItem("uCode"); // Replace with actual game session handling
-        let currentSymbol = "X"; // Default starting symbol
+    <!-- Popup for winner -->
+    <div class="popup" id="winnerPopup">
+        <div class="popup-content">
+            <h2 id="popupMessage"></h2>
+            <button onclick="closePopup()">Close</button>
+        </div>
+    </div>
 
-        async function makeMove(position) {
-            try {
-                const response = await fetch('http://localhost:3005/makeMove', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        sid: sid,
-                        position: position,
-                        symbol: currentSymbol
-                    })
-                });
-                const data = await response.json();
-                document.getElementById('status').innerText = data.message;
-                
-                // Update the board visually
-                if (data.board) {
-                    document.querySelectorAll('.cell').forEach((cell, index) => {
-                        cell.innerText = data.board[index] || '';
-                    });
-                }
-
-                // Update turn for the next move
-                if (data.currentTurn) {
-                    currentSymbol = data.currentTurn;
-                }
-
-            } catch (error) {
-                console.error("Error making move:", error);
-            }
-        }
-    </script>
+    <script src="game.js"></script>
 </body>
 </html>

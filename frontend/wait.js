@@ -2,9 +2,9 @@ var ulAccepted=document.getElementById("playerList_1");
 
 
 document.addEventListener("DOMContentLoaded", () => {
-     
+    
     if(localStorage.getItem('uCode')==null){
-        generateCode();
+        setTimeout(generateCode(),200);
     }
     else{
         document.getElementById("codeDisplay").innerText=localStorage.getItem('uCode');
@@ -12,27 +12,32 @@ document.addEventListener("DOMContentLoaded", () => {
     if(localStorage.getItem('user')!='host'){
         setTimeout(()=>{
             console.log("ooo"+localStorage.getItem('user'));
+            
             document.getElementById('strtBtn').style.display='none';
         },2);
         lookForStart();
+        localStorage.setItem('sym','O');
+        
         
     }
     else{
-       
+        localStorage.setItem('sym','X');
     }
 });
 
 
 
 function generateCode(){
-    console.log("okk");
+    //console.log("okk");
     const display=(code)=>{
     console.log("hii"+code);
     localStorage.setItem('uCode', code);
      
    document.getElementById("codeDisplay").innerText=code;
-    }
-        fetch("http://localhost:3005/serverGet?uid="+localStorage.getItem('uid')+"&name"+localStorage.getItem('name'))
+    }   
+
+         //console.log(localStorage.getItem('name')+"'''''''''");
+        fetch("http://localhost:3005/serverGet?uid="+localStorage.getItem('uid')+"&name="+localStorage.getItem('name'))
        .then(data=>data.json())
        .then(data=>display(data.val))
        .catch(e=>console.log(e));
@@ -76,7 +81,7 @@ function startFetching() {
                  
             })
             .catch(error => console.log("Error:", error));
-    }, 5000); 
+    }, 4000); 
 }
 
 function  lookForStart(){
@@ -104,3 +109,11 @@ function  lookForStart(){
 
 
 startFetching();
+ 
+document.addEventListener("keypress", (e) => {
+    if(e.key=="e")
+    { console.log(localStorage.getItem('uid')+" uid");
+    console.log(localStorage.getItem('name')+" name");
+    }
+    
+});
