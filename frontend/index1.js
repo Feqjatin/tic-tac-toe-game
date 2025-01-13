@@ -7,7 +7,7 @@ function getUid(userName) {
             localStorage.setItem('name',userName);
         }
 
-        fetch("http://localhost:3005/userGet?name=" + userName)
+        fetch("https://business-game-i1dp.onrender.com/userGet?name=" + userName)
             .then(data => data.json())
             .then(data => {
                 display(data.val); 

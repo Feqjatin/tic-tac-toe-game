@@ -16,10 +16,7 @@ app.use(express.json());
 mongoose.connect('mongodb+srv://prajapatijatin:123456789Ok@cluster0.7dpjd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(() => console.log('MongoDB connected'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
  
-// const serverSchema = new mongoose.Schema({
-//     sid: { type: String, required: true }
-// });
-// const Server = mongoose.model('server_name', serverSchema);
+ 
 
 const userSchema = new mongoose.Schema({
     uid: { type: String, required: true },
@@ -44,11 +41,10 @@ const playerSchema = new mongoose.Schema({
 const Player = mongoose.model('Player', playerSchema);
 
 const gameSchema = new mongoose.Schema({
-    sid: { type: String, required: true },  // Game session ID
-    board: { type: [String], default: Array(9).fill(null) }, // 3x3 grid
-    currentTurn: { type: String, enum: ['X', 'O'], default: 'X' }, // Current turn
-    status: { type: String, enum: ['waiting', 'in_progress', 'completed'], default: 'waiting' }, // Game status
-    winner: { type: String, required: false }, // Winner symbol ('X', 'O', or 'tie')
+    sid: { type: String, required: true },   
+    board: { type: [String], default: Array(9).fill(null) },  
+    currentTurn: { type: String, enum: ['X', 'O'], default: 'X' },  
+    status: { type: String, enum: ['waiting', 'in_progress', 'completed'], default: 'waiting' }, 
 });
 const Game =mongoose.model("Game", gameSchema);
 
@@ -65,16 +61,16 @@ app.get('/serverGet', async (req, res) => {
             const tempCode = generateCode();
             const host = await Host.findOne({ sid: tempCode });
             
-            if (!host) {  // If no existing host with the same sid
+            if (!host) {   
                 const newHost = new Host({ sid: tempCode, uid: tempUid });
                 await newHost.save();
 
-                // ✅ Use tempCode instead of sid
+                 
                 const newGame = new Game({ sid: tempCode });
                 const newPlayer = new Player({
-                    sid: tempCode,  // ✅ Correct variable used here
+                    sid: tempCode,   
                     uid: tempUid,
-                    name: tempName  || "Player1",  // ✅ Fallback for name
+                    name: tempName  || "Player1",  
                     symbol: "X",
                     status: "ready",
                 });
@@ -82,9 +78,9 @@ app.get('/serverGet', async (req, res) => {
                 await newGame.save();
                 await newPlayer.save();
                 
-                res.json({ val: tempCode });  // ✅ Single response sent
+                res.json({ val: tempCode });  
                 console.log("Host added:", tempCode);
-                break;  // ✅ Break out of the loop after successful creation
+                break;  
             } else {
                 console.log("Duplicate code, retrying...");
             }
@@ -110,7 +106,7 @@ app.get('/userGet', async (req, res) => {
             const newUser = new User({ uid: tempCode,name:tempName});
             const result = await newUser.save(); 
             code={"val":tempCode};
-            //console.log("hhha"+code.val+result);
+             
             res.json(code);break;
         }
         else{
@@ -122,61 +118,7 @@ app.get('/userGet', async (req, res) => {
     }
 });
 
-
-// app.get('/join', async (req, res) => {
-//     try {
-//         // Directly use the already imported 'url' module
-//         const Usid = url.parse(req.url, true).query.sid;
-//         const Uuid = url.parse(req.url, true).query.uid;
-
-//         const newPlayer_1 = await Player.find({ uid: Uuid, sid: Usid });
-
-//         if (newPlayer_1.length === 0) {  
-//             const userName = await User.findOne({ uid: Uuid });
-            
-//             if (!userName) {
-//                 return res.status(404).send("User not found");
-//             }
-
-//             const newPlayer = new Player({ 
-//                 uid: Uuid, 
-//                 sid: Usid, 
-//                 name: userName.name, 
-//                 status: '1' 
-//             });
-
-//             await newPlayer.save(); 
-//             console.log("Player joined successfully");
-//         } else {
-//             console.log("Player already exists.");
-//         }
-//        res.json({"val":"done"});
-        
-//     } catch (error) {
-//         console.error("Error:", error);
-//         res.status(500).send("Internal Server Error");
-//     }
-// });
-
-
-
-// app.get('/checkStatus', async (req, res) => {
-//     try{
-//     Usid=url.parse(req.url, true).query.sid;
-//     Uuid=url.parse(req.url, true).query.uid;
-//     const  PlayerRes= await Player.find({uid:Uuid,sid:Usid});
-//     if(PlayerRes[0]==null){
-//     res.json({"val":"1"});
-//     }
-//     else{
-//         res.json({"val":PlayerRes[0].status});
-//     }
-//    console.log(Usid+" "+Uuid);
-//     } catch (error) {
-//     res.status(500).send('Error fetching servers');
-//     }
-// });
-
+ 
 app.get('/checkPlayer', async (req, res) => {
     try {
         Usid = url.parse(req.url, true).query.sid;
@@ -221,12 +163,7 @@ function generateUid()
 
 
 
-// app.post("/createGame", async (req, res) => {
-//   tempUid=url.parse(req.url, true).query.uid;
-//   const sid = generateCode();
-
  
-// });
 
 
 app.get("/joinGame", async (req, res) => {
@@ -234,7 +171,7 @@ app.get("/joinGame", async (req, res) => {
     const uid = url.parse(req.url, true).query.uid;
     const name = url.parse(req.url, true).query.name;
   
-    console.log("Tsid:", sid, "TUuid:", uid, "Tname:", name);  // Log the query params
+    console.log("Tsid:", sid, "TUuid:", uid, "Tname:", name);   
   
     try {
       const game = await Game.findOne({ sid });
@@ -292,13 +229,13 @@ app.get("/checkGame", async (req, res) => {
 });
 
 
-// Get game state
+ 
 app.get("/gameState", async (req, res) => {
     const sid = url.parse(req.url, true).query.sid;
     const uid = url.parse(req.url, true).query.uid;
   
     try {
-      // Fetch the game details
+       
       const game = await Game.findOne({ sid });
       if (!game) return res.status(404).send("Game not found.");
   
@@ -309,7 +246,7 @@ app.get("/gameState", async (req, res) => {
       res.json({
         game,
         players,
-        opponentName, // Add opponent name for convenience
+        opponentName, 
       });
     } catch (err) {
       console.error(err);
@@ -318,7 +255,7 @@ app.get("/gameState", async (req, res) => {
   });
   
 
-// Make a move
+ 
 app.post('/makeMove', async (req, res) => {
   const { sid, position, symbol } = req.body;
 
@@ -326,25 +263,25 @@ app.post('/makeMove', async (req, res) => {
       const game = await Game.findOne({ sid });
       if (!game) return res.status(404).json({ message: "Game not found" });
 
-      // Check if the game is completed
+       
       if (game.status === "completed") {
           return res.status(400).json({ message: "Game is already completed!" });
       }
 
-      // Check if it's the player's turn
+       
       if (game.currentTurn !== symbol) {
           return res.status(403).json({ message: `It's not ${symbol}'s turn!` });
       }
 
-      // Check if the position is already taken
+       
       if (game.board[position]) {
           return res.status(400).json({ message: "Position already taken!" });
       }
 
-      // Update the board
+       
       game.board[position] = symbol;
 
-      // Check for a winner
+       
       const winPatterns = [
           [0, 1, 2], [3, 4, 5], [6, 7, 8],
           [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -361,9 +298,9 @@ app.post('/makeMove', async (req, res) => {
           game.winner = game.board[winner[0]];
       } else if (!game.board.includes(null)) {
           game.status = "completed";
-          game.winner = "tie"; // Explicitly set to "tie" for a tied game
+          game.winner = "tie";  
       } else {
-          // Switch turns if no winner and the game is not a tie
+          
           game.currentTurn = symbol === "X" ? "O" : "X";
       }
 
@@ -407,8 +344,7 @@ app.post('/restartGame', async (req, res) => {
 
 
  
-
-// Start the server
+ 
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });

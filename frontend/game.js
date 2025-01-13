@@ -12,7 +12,7 @@ document.addEventListener("keypress", (e) => {
 
 async function fetchGameState() {
     try {
-        const response = await fetch(`http://localhost:3005/gameState?uid=${localStorage.getItem('uid')}&sid=${localStorage.getItem('uCode')}`, {
+        const response = await fetch(`https://business-game-i1dp.onrender.com/gameState?uid=${localStorage.getItem('uid')}&sid=${localStorage.getItem('uCode')}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -48,11 +48,11 @@ async function fetchGameState() {
     }
 }
 
-setInterval(fetchGameState, 3000);
+setInterval(fetchGameState, 1000);
 
 async function makeMove(position) {
     try {
-        const response = await fetch('http://localhost:3005/makeMove', {
+        const response = await fetch('https://business-game-i1dp.onrender.com/makeMove', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -104,7 +104,7 @@ function closePopup() {
 
 async function restartGame() {
     try {
-        const response = await fetch('http://localhost:3005/restartGame', {
+        const response = await fetch('https://business-game-i1dp.onrender.com/restartGame', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

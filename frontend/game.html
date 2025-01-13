@@ -33,26 +33,34 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-family: 'Roboto', sans-serif; /* Changing the font */
+    border: 2px solid #22ff94; /* Add a border around the player info */
 }
 
 .player-info p {
-    font-size: 20px;
-    margin: 0 10px;  /* Adding space between player names */
+    display: inline;
+    font-size: 22px; /* Slightly larger font size */
+    margin: 5px 15px;  /* Adding space between player names */
+    color: #ffffff; /* Changing text color */
 }
 
 #playerName {
     font-weight: bold;
-    color: #ff9800;
+    color: #ff9800; /* Bright orange for the player's name */
+    font-size: 24px; /* Slightly larger font for player's name */
 }
 
 #opponentName {
     font-weight: bold;
-    color: #ff5722;
+    color: #ff5722; /* Bright red for opponent's name */
+    font-size: 24px; /* Slightly larger font for opponent's name */
 }
-#status{
-    font-weight: bold;
-    color: #a16920;
 
+#status {
+    font-weight: bold;
+    color: #ffd54f; /* Gold color for status text */
+    font-size: 20px; /* Adjust font size for the status */
+    margin-top: 10px;
 }
 
         .board {
@@ -134,6 +142,7 @@
             vs
             <p id="opponentName"></p>
             </div>
+            <hr style="width:75%">
             <p id="PlayerSymbole"></p>
             <p id="status"></p>
         </div>
