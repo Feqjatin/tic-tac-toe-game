@@ -12,6 +12,7 @@ document.addEventListener("keypress", (e) => {
 });
 
 async function fetchGameState() {
+     
     try {
         const response = await fetch(`https://business-game-i1dp.onrender.com/gameState?uid=${localStorage.getItem('uid')}&sid=${localStorage.getItem('uCode')}`, {
             method: 'GET',
@@ -33,12 +34,7 @@ async function fetchGameState() {
                 showPopup(`🤝 It's a Tie!`);
             }
 
-            setTimeout(async () => {
-                closePopup();
-                if (localStorage.getItem('user') === 'host') {
-                    await restartGame();  
-                }
-            }, 4000);
+             clearInterval(end);
             return;
         }
 
@@ -54,6 +50,7 @@ async function fetchGameState() {
     } catch (error) {
         console.error("Failed to fetch game state:", error);
     }
+ 
 }
 
 async function makeMove(position) {
@@ -90,7 +87,7 @@ function showPopup(message) {
     messageElement.innerText = message;
     popup.style.display = 'block';
 
-    setTimeout(closePopup, 3000);
+    closePopup, 3000;
 }
 
 function closePopup() {
@@ -99,6 +96,7 @@ function closePopup() {
 }
 
 async function restartGame() {
+    closePopup();
     try {
         const response = await fetch('https://business-game-i1dp.onrender.com/restartGame', {
             method: 'POST',
@@ -111,7 +109,7 @@ async function restartGame() {
         if (!response.ok) {
             throw new Error(`Error: ${response.status} - ${await response.text()}`);
         }
-
+         
         const data = await response.json();
 
         if (response.ok) {
@@ -119,6 +117,7 @@ async function restartGame() {
                 cell.innerText = '';
             });
             document.getElementById('status').innerText = "Player X's Turn";
+            startFetching();
         } else {
             console.error("Error:", data.message);
         }
@@ -126,5 +125,8 @@ async function restartGame() {
         console.error("Error restarting game:", error);
     }
 }
+function startFetching(){
+    end=setInterval(fetchGameState,1000);
+}
+startFetching();
 
-const end = setInterval(fetchGameState, 1000);
