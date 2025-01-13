@@ -46,7 +46,7 @@ function generateCode(){
    function copyCode() {
     const code = document.getElementById('codeDisplay').textContent;
     navigator.clipboard.writeText(code);
-    alert('Code copied to clipboard!');
+    //alert('Code copied to clipboard!');
 }
 
 
@@ -101,7 +101,7 @@ function  lookForStart(){
             console.log("Game State:", data.status);
         })
         .catch(e => console.error("Error checking game state:", e));
-    },3000);
+    },2000);
 }
 
 
