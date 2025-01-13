@@ -31,7 +31,7 @@ async function fetchGameState() {
             } else {
                 showPopup(`🤝 It's a Tie!`);
             }
-            setTimeout(restartGame, 4000);  
+            setTimeout(restartGame, 2000);  
             return;  
         }
 
@@ -73,8 +73,8 @@ async function makeMove(position) {
         }
 
         if (data.winner) {
-            showPopup(data.winner === "tie" ? `🤝 It's a Tie!` : `🎉 Player ${data.winner} wins! 🎉`);
-            setTimeout(restartGame, 4000);
+            //showPopup(data.winner === "tie" ? `🤝 It's a Tie!` : `🎉 Player ${data.winner} wins! 🎉`);
+           // setTimeout(restartGame, 4000);
         }
 
     } catch (error) {
@@ -87,7 +87,7 @@ function showPopup(message) {
     const messageElement = document.getElementById('popupMessage');
     messageElement.innerText = message;
     popup.style.display = 'block';
-
+      
 
     setTimeout(closePopup, 3000);
 }
