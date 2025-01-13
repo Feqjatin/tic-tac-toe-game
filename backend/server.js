@@ -45,6 +45,7 @@ const gameSchema = new mongoose.Schema({
     board: { type: [String], default: Array(9).fill(null) },  
     currentTurn: { type: String, enum: ['X', 'O'], default: 'X' },  
     status: { type: String, enum: ['waiting', 'in_progress', 'completed'], default: 'waiting' }, 
+    winner: { type: String, required: false }, 
 });
 const Game =mongoose.model("Game", gameSchema);
 
