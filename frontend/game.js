@@ -31,7 +31,10 @@ async function fetchGameState() {
             } else {
                 showPopup(`🤝 It's a Tie!`);
             }
-            setTimeout(restartGame, 2000);  
+            setTimeout(() => {
+                closePopup();
+                restartGame();
+            }, 4000);  
             return;  
         }
 
@@ -72,10 +75,7 @@ async function makeMove(position) {
             });
         }
 
-        if (data.winner) {
-            //showPopup(data.winner === "tie" ? `🤝 It's a Tie!` : `🎉 Player ${data.winner} wins! 🎉`);
-           // setTimeout(restartGame, 4000);
-        }
+        
 
     } catch (error) {
         console.error("Error making move:", error);
