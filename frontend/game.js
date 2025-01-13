@@ -101,6 +101,7 @@ async function restartGame() {
     try {
         const response = await fetch('https://business-game-i1dp.onrender.com/restartGame', {
             method: 'POST',
+            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json'
             },
