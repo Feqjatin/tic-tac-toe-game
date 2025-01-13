@@ -1,12 +1,13 @@
 const sid = localStorage.getItem("uCode");
-document.getElementById('playerName').innerText=localStorage.getItem('name');
-document.getElementById('PlayerSymbole').innerText=" Yr : " +localStorage.getItem('sym');
-statusBar=document.getElementById('status');
-oppName=document.getElementById('opponentName');
+document.getElementById('playerName').innerText = localStorage.getItem('name');
+document.getElementById('PlayerSymbole').innerText = "Yr: " + localStorage.getItem('sym');
+statusBar = document.getElementById('status');
+oppName = document.getElementById('opponentName');
+
 document.addEventListener("keypress", (e) => {
-    if(e.key=="e") {
-        console.log(localStorage.getItem('uid')+" uid");
-        console.log(localStorage.getItem('uCode')+" ucode");
+    if (e.key == "e") {
+        console.log(localStorage.getItem('uid') + " uid");
+        console.log(localStorage.getItem('uCode') + " ucode");
     }
 });
 
@@ -31,13 +32,14 @@ async function fetchGameState() {
             } else {
                 showPopup(`🤝 It's a Tie!`);
             }
-            setTimeout(() => {
+
+            setTimeout(async () => {
                 closePopup();
-                if(localStorage.getItem('user')==='host'){
-                restartGame();
+                if (localStorage.getItem('user') === 'host') {
+                    await restartGame();  
                 }
-            }, 4000);  
-            return;  
+            }, 4000);
+            return;
         }
 
         statusBar.innerText = `Current Turn: ${data.game.currentTurn}`;
@@ -77,8 +79,6 @@ async function makeMove(position) {
             });
         }
 
-        
-
     } catch (error) {
         console.error("Error making move:", error);
     }
@@ -89,7 +89,6 @@ function showPopup(message) {
     const messageElement = document.getElementById('popupMessage');
     messageElement.innerText = message;
     popup.style.display = 'block';
-      
 
     setTimeout(closePopup, 3000);
 }
@@ -103,12 +102,15 @@ async function restartGame() {
     try {
         const response = await fetch('https://business-game-i1dp.onrender.com/restartGame', {
             method: 'POST',
-            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ sid })
+            body: JSON.stringify({ sid: localStorage.getItem('uCode') })
         });
+
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status} - ${await response.text()}`);
+        }
 
         const data = await response.json();
 
@@ -125,6 +127,4 @@ async function restartGame() {
     }
 }
 
-
-const end=setInterval(fetchGameState, 1000);
- 
+const end = setInterval(fetchGameState, 1000);
