@@ -92,7 +92,7 @@ function showPopup(message) {
      
     setTimeout(() => {
         closePopup();
-        restartGame(); 
+        //restartGame(); 
     }, 1000);
 }
 
