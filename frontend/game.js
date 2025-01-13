@@ -32,8 +32,7 @@ async function fetchGameState() {
             } else {
                 showPopup(`🤝 It's a Tie!`);
             }
-            clearInterval(end);
-            restartGame();
+             
         }
 
         statusBar.innerText = `Current Turn: ${data.game.currentTurn}`;
@@ -94,7 +93,7 @@ function showPopup(message) {
     setTimeout(() => {
         closePopup();
         restartGame(); 
-    }, 5000);
+    }, 1000);
 }
 
 
