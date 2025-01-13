@@ -89,18 +89,16 @@ function showPopup(message) {
     messageElement.innerText = message;
     popup.style.display = 'block';
 
-     
+    
     setTimeout(() => {
         closePopup();
-        restartGame(); 
-    }, 1000);
+    }, 3000);  
 }
-
 
 function closePopup() {
     const popup = document.getElementById('winnerPopup');
     popup.style.display = 'none';
-    window.location.reload();
+    restartGame();  
 }
 
 async function restartGame() {
