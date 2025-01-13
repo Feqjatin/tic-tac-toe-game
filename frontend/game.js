@@ -26,7 +26,7 @@ async function fetchGameState() {
         const data = await response.json();
 
         if (data.game.status === "completed") {
-            console.log(data.game.winner+" kokok "+data.game.winner);
+            console.log(data.game.winner+" kokok "+data.game.status);
             if (data.game.winner && data.game.winner !== "tie") {
                 showPopup(`🎉 Player ${data.game.winner} wins! 🎉`);
             } else {
@@ -92,7 +92,7 @@ function showPopup(message) {
      
     setTimeout(() => {
         closePopup();
-        //restartGame(); 
+        restartGame(); 
     }, 1000);
 }
 
