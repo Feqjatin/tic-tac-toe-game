@@ -26,17 +26,17 @@ async function fetchGameState() {
         const data = await response.json();
 
         if (data.game.status === "completed") {
-           // alert(data.game.winner+" kokok "+data.game.status);
             if (data.game.winner && data.game.winner !== "tie") {
                 showPopup(`🎉 Player ${data.game.winner} wins! 🎉`);
             } else {
                 showPopup(`🤝 It's a Tie!`);
             }
-             setTimeout(restartGame,2000);
+            setTimeout(restartGame, 4000);  
+            return;  
         }
 
         statusBar.innerText = `Current Turn: ${data.game.currentTurn}`;
-        oppName.innerText=data.opponentName ;
+        oppName.innerText = data.opponentName;
 
         if (data.game.board) {
             document.querySelectorAll('.cell').forEach((cell, index) => {
@@ -48,8 +48,6 @@ async function fetchGameState() {
         console.error("Failed to fetch game state:", error);
     }
 }
-
-const end=setInterval(fetchGameState, 1000);
 
 async function makeMove(position) {
     try {
@@ -74,8 +72,10 @@ async function makeMove(position) {
             });
         }
 
-         alert(data.game.winner);
-       
+        if (data.winner) {
+            showPopup(data.winner === "tie" ? `🤝 It's a Tie!` : `🎉 Player ${data.winner} wins! 🎉`);
+            setTimeout(restartGame, 4000);
+        }
 
     } catch (error) {
         console.error("Error making move:", error);
@@ -87,13 +87,14 @@ function showPopup(message) {
     const messageElement = document.getElementById('popupMessage');
     messageElement.innerText = message;
     popup.style.display = 'block';
-        closePopup();       
+
+
+    setTimeout(closePopup, 3000);
 }
 
 function closePopup() {
     const popup = document.getElementById('winnerPopup');
     popup.style.display = 'none';
-    
 }
 
 async function restartGame() {
@@ -109,7 +110,6 @@ async function restartGame() {
         const data = await response.json();
 
         if (response.ok) {
-            showPopup(data.message);
             document.querySelectorAll('.cell').forEach(cell => {
                 cell.innerText = '';
             });
@@ -121,3 +121,7 @@ async function restartGame() {
         console.error("Error restarting game:", error);
     }
 }
+
+
+const end=setInterval(fetchGameState, 1000);
+ 
