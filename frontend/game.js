@@ -31,6 +31,7 @@ async function fetchGameState() {
             } else {
                 showPopup(`🤝 It's a Tie!`);
             }
+            clearInterval(end);
             restartGame();
         }
 
@@ -48,7 +49,7 @@ async function fetchGameState() {
     }
 }
 
-setInterval(fetchGameState, 1000);
+const end=setInterval(fetchGameState, 1000);
 
 async function makeMove(position) {
     try {
