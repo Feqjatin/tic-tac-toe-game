@@ -50,7 +50,7 @@ async function fetchGameState() {
     }
 }
 
-const end=setInterval(fetchGameState, 1000);
+const end=setInterval(fetchGameState, 2500);
 
 async function makeMove(position) {
     try {
