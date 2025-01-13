@@ -26,7 +26,7 @@ async function fetchGameState() {
         const data = await response.json();
 
         if (data.game.status === "completed") {
-            console.log(data.game.winner+" kokok "+data.game.status);
+            alert(data.game.winner+" kokok "+data.game.status);
             if (data.game.winner && data.game.winner !== "tie") {
                 showPopup(`🎉 Player ${data.game.winner} wins! 🎉`);
             } else {
@@ -74,9 +74,8 @@ async function makeMove(position) {
             });
         }
 
-        if (data.currentTurn) {
-            currentSymbol = data.currentTurn;
-        }
+         alert(data.game.winner);
+       
 
     } catch (error) {
         console.error("Error making move:", error);
