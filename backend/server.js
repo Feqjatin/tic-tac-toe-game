@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(express.json());
 
  
-mongoose.connect('mongodb+srv://prajapatijatin:123456789Ok@cluster0.7dpjd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0').then(() => console.log('MongoDB connected'))
+mongoose.connect(' ').then(() => console.log('MongoDB connected'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
  
  
