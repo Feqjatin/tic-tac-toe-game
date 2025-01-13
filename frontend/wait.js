@@ -96,7 +96,7 @@ function  lookForStart(){
             {
                 alert("game end ");
                 localStorage.clear();
-                window.location.href = 'index1.html';
+                window.location.href = 'index.html';
             }
             console.log("Game State:", data.status);
         })
