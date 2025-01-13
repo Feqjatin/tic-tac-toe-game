@@ -26,7 +26,7 @@ async function fetchGameState() {
         const data = await response.json();
 
         if (data.game.status === "completed") {
-            alert(data.game.winner+" kokok "+data.game.status);
+           // alert(data.game.winner+" kokok "+data.game.status);
             if (data.game.winner && data.game.winner !== "tie") {
                 showPopup(`🎉 Player ${data.game.winner} wins! 🎉`);
             } else {
@@ -49,7 +49,7 @@ async function fetchGameState() {
     }
 }
 
-const end=setInterval(fetchGameState, 2500);
+const end=setInterval(fetchGameState, 1000);
 
 async function makeMove(position) {
     try {
@@ -87,11 +87,7 @@ function showPopup(message) {
     const messageElement = document.getElementById('popupMessage');
     messageElement.innerText = message;
     popup.style.display = 'block';
-
-    
-    setTimeout(() => {
-        closePopup();
-    }, 3000);  
+        closePopup();       
 }
 
 function closePopup() {
