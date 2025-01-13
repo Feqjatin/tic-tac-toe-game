@@ -33,7 +33,9 @@ async function fetchGameState() {
             }
             setTimeout(() => {
                 closePopup();
+                if(localStorage.getItem('user')==='host'){
                 restartGame();
+                }
             }, 4000);  
             return;  
         }
