@@ -28,7 +28,7 @@ function createNewGame() {
 function waiting()
 {
     console.log("try to join ");
-    fetch(`https://business-game-i1dp.onrender.com/joinGame?uid=${localStorage.getItem('uid')}&sid=${localStorage.getItem('uCode')}&name=${localStorage.getItem('name')}`)
+    fetch(`https://tic-tac-toe-game-e4oh.onrender.com/joinGame?uid=${localStorage.getItem('uid')}&sid=${localStorage.getItem('uCode')}&name=${localStorage.getItem('name')}`)
   .then(response => {
     console.log("Response status:", response.status);
     return response.text();  // Get raw text to inspect

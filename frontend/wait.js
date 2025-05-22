@@ -37,7 +37,7 @@ function generateCode(){
     }   
 
          //console.log(localStorage.getItem('name')+"'''''''''");
-        fetch("http://localhost:3005/serverGet?uid="+localStorage.getItem('uid')+"&name="+localStorage.getItem('name'))
+        fetch("https://tic-tac-toe-game-e4oh.onrender.com/serverGet?uid="+localStorage.getItem('uid')+"&name="+localStorage.getItem('name'))
        .then(data=>data.json())
        .then(data=>display(data.val))
        .catch(e=>console.log(e));
@@ -54,7 +54,7 @@ function generateCode(){
 
 function startGame() {
     console.log("lara");
-    fetch(`http://localhost:3005/startGame?sid=${localStorage.getItem('uCode')}`)
+    fetch(`https://tic-tac-toe-game-e4oh.onrender.com/startGame?sid=${localStorage.getItem('uCode')}`)
     .then(response => response.json())
     .then(data => {
 
@@ -68,7 +68,7 @@ function startGame() {
 function startFetching() {
     const intervalId = setInterval(() => {
         console.log("getting player");
-        fetch("http://localhost:3005/checkPlayer?sid="+localStorage.getItem('uCode')+"&ran="+Math.random()*1000)
+        fetch("https://tic-tac-toe-game-e4oh.onrender.com/checkPlayer?sid="+localStorage.getItem('uCode')+"&ran="+Math.random()*1000)
             .then(data => data.json())
             .then(data => {
                 console.log("Response data:");
@@ -86,7 +86,7 @@ function startFetching() {
 
 function  lookForStart(){
     const intervalId = setInterval(() => {
-        fetch(`http://localhost:3005/checkGame?sid=${localStorage.getItem('uCode')}`)
+        fetch(`https://tic-tac-toe-game-e4oh.onrender.com/checkGame?sid=${localStorage.getItem('uCode')}`)
         .then(response => response.json())
         .then(data => {
             if(data.status=="in_progress"){

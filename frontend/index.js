@@ -1,3 +1,6 @@
+require('dotenv').config();
+var backendUrl=process.env.BACKEND_URL;
+console.log("Backend URL:", backendUrl);
 function getUid(userName) {
     if (userName.length > 0) {
         console.log("getting uid");
@@ -7,7 +10,7 @@ function getUid(userName) {
             localStorage.setItem('name',userName);
         }
 
-        fetch("http://localhost:3005/userGet?name=" + userName)
+        fetch("https://tic-tac-toe-game-e4oh.onrender.com/userGet?name=" + userName)
             .then(data => data.json())
             .then(data => {
                 display(data.val); 
