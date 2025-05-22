@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const cors= require('cors');
 const bodyParser = require('body-parser');
 const url=require('url');
+require('dotenv').config();
 
 const app = express();
 const PORT = 3005;
@@ -11,9 +12,9 @@ const PORT = 3005;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.json());
-
+const Mongo_url=process.env.mongoUrl;
  
-mongoose.connect(' ').then(() => console.log('MongoDB connected'))
+mongoose.connect(Mongo_url).then(() => console.log('MongoDB connected'))
   .catch(err => console.error('Error connecting to MongoDB:', err));
  
  
